@@ -4,10 +4,14 @@ import os
 
 exec_filepath = os.path.realpath(__file__)
 
-DIRPATH = exec_filepath[0:len(exec_filepath)-len(os.path.basename(__file__))]
+DIRPATH = exec_filepath[0:len(exec_filepath)-len(os.path.basename(__file__)) - 1]
+DIRPATH_BASENAME = os.path.basename(DIRPATH)
 CONFIG_PATHNAME = os.path.realpath(os.path.join(DIRPATH, '..', '.config'))
+VERSION_PATHNAME = os.path.realpath(os.path.join(DIRPATH, 'VERSION'))
 
+APP_NAME, APP_UNIXNAME, APP_VERSION = open(VERSION_PATHNAME).read().splitlines()
 
+CONFIG_ENTRY_SIGN = '# {APP_NAME} customized config'.format(APP_NAME=APP_NAME)
 CUSTOM_CONFIG = '''
 BR2_PACKAGE_BTRFS_PROGS=y
 BR2_PACKAGE_CIFS_UTILS=y
@@ -58,15 +62,13 @@ BR2_PACKAGE_TCPDUMP=y
 BR2_PACKAGE_TCPDUMP_SMB=y
 BR2_TOOLCHAIN_BUILDROOT_WCHAR=y
 BR2_TARGET_ROOTFS_EXT2_SIZE="200M"
-BR2_ROOTFS_POST_BUILD_SCRIPT="qnas/post-build.sh"
-'''
+BR2_ROOTFS_POST_BUILD_SCRIPT="{DIRPATH_BASENAME}/post-build.sh"
+'''.format(DIRPATH_BASENAME=DIRPATH_BASENAME)
 
 
-print('Patching', CONFIG_PATHNAME)
+print('Patching Buildroot config', CONFIG_PATHNAME)
 
 def comment_config_out_keys():
-    print('Commenting out keys')
-
     with open(CONFIG_PATHNAME, 'r+') as f:
         current_config_lines = f.read().split('\n')
         len_current_config_lines = len(current_config_lines)
@@ -80,28 +82,29 @@ def comment_config_out_keys():
                 ikey = iline.split('=')[0] + '='
 
             for iconfigindex in range(len_current_config_lines):
-                if current_config_lines[iconfigindex] == '# QNAS customized config':
+                if current_config_lines[iconfigindex] == CONFIG_ENTRY_SIGN:
                     break
 
                 if current_config_lines[iconfigindex].startswith(ikey):
                     current_config_lines[iconfigindex] = '# ' + current_config_lines[iconfigindex].strip()
-                    print(ikey[:-1])
 
         f.seek(0)
         f.write('\n'.join(current_config_lines))
 
 
 def write_custom_config():
-    print('Patching')
-
-    with open(CONFIG_PATHNAME, 'a') as f:
-        f.write('\n')
-        f.write('#\n')
-        f.write('# QNAS customized config\n')
-        f.write('#\n')
-        f.write(CUSTOM_CONFIG)
-        f.write('\n')
+    with open(CONFIG_PATHNAME, 'r+') as f:
+        if CONFIG_ENTRY_SIGN not in f.read().splitlines():
+            f.write('\n')
+            f.write('#\n')
+            f.write(CONFIG_ENTRY_SIGN + '\n')
+            f.write('#\n')
+            f.write(CUSTOM_CONFIG)
+            f.write('\n')
 
 
 comment_config_out_keys()
 write_custom_config()
+
+print('Done. Now run "make menuconfig", perform some changes or just save it without any changes.')
+print('Fially run "make", after few hours your SD card image will be in "output/images/sdcard.img"')

@@ -7,6 +7,15 @@ import io
 # qemu-system-arm -kernel e:\projects\kernel-qemu-4.4.34-jessie -append "root=/dev/sda2 panic=1 rootfstype=ext4 quiet" -hda e:\projects\sdcard.img -cpu arm1176 -m 256 -M versatilepb -serial none -nic user,hostfwd=tcp::1139-:139
 # sudo apt-get install repo git-core gitk git-gui gcc-arm-linux-gnueabihf u-boot-tools device-tree-compiler gcc-aarch64-linux-gnu mtools parted libudev-dev libusb-1.0-0-dev python-linaro-image-tools linaro-image-tools autoconf autotools-dev libsigsegv2 m4 intltool libdrm-dev curl sed make binutils build-essential gcc g++ bash patch gzip bzip2 perl tar cpio python unzip rsync file bc wget libncurses5 libqt4-dev libglib2.0-dev libgtk2.0-dev libglade2-dev cvs git mercurial rsync openssh-client subversion asciidoc w3m dblatex graphviz python-matplotlib libc6 libssl-dev texinfo liblz4-tool genext2fs
 
+exec_filepath = os.path.realpath(__file__)
+
+DIRPATH = exec_filepath[0:len(exec_filepath)-len(os.path.basename(__file__)) - 1]
+DIRPATH_BASENAME = os.path.basename(DIRPATH)
+CONFIG_PATHNAME = os.path.realpath(os.path.join(DIRPATH, '..', '.config'))
+VERSION_PATHNAME = os.path.realpath(os.path.join(DIRPATH, 'VERSION'))
+
+APP_NAME, APP_UNIXNAME, APP_VERSION = open(VERSION_PATHNAME).read().splitlines()
+
 base_dir = os.environ['BASE_DIR']
 cmdline_txt_path = os.path.join(base_dir, 'images', 'rpi-firmware', 'cmdline.txt')
 config_txt_path = os.path.join(base_dir, 'images', 'rpi-firmware', 'config.txt')
@@ -49,10 +58,10 @@ gateway 192.168.1.1
 
 smb_conf_content = """
 [global]
-    netbios name = qnas
+    netbios name = {APP_UNIXNAME}
     display charset = UTF-8
     bind interfaces only = yes
-    server string = qnas
+    server string = {APP_UNIXNAME}
     unix charset = UTF-8
     workgroup = WORKGROUP
     browseable = yes
@@ -110,7 +119,7 @@ smb_conf_content = """
     force user = nobody
     create mask = 0777
     directory mask = 0777
-"""
+""".format(APP_UNIXNAME=APP_UNIXNAME)
 
 
 def file_extract_lines(filename):
@@ -196,11 +205,11 @@ def write_smb_conf():
 
 
 def write_hostname():
-    open(hostname_path, 'w+').write('qnas')
+    open(hostname_path, 'w+').write(APP_UNIXNAME)
 
 
 def write_issue():
-    open(issue_path, 'w+').write('Welcome to QNAS\n')
+    open(issue_path, 'w+').write('Welcome to {APP_NAME} {APP_VERSION}\n'.format(APP_NAME=APP_NAME, APP_VERSION=APP_VERSION))
 
 
 def enable_rc_local2():
@@ -221,7 +230,10 @@ def enable_rc_local2():
 
 
 def create_directories():
-    os.mkdir(media_sda1_path, 0o777)
+    try:
+        os.mkdir(media_sda1_path, 0o777)
+    except FileExistsError:
+        pass
 
 
 enable_overscan()
