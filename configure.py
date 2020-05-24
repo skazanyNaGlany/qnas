@@ -58,7 +58,7 @@ BR2_PACKAGE_TCPDUMP=y
 BR2_PACKAGE_TCPDUMP_SMB=y
 BR2_TOOLCHAIN_BUILDROOT_WCHAR=y
 BR2_TARGET_ROOTFS_EXT2_SIZE="200M"
-BR2_ROOTFS_POST_BUILD_SCRIPT="vsnas/post-build.sh"
+BR2_ROOTFS_POST_BUILD_SCRIPT="qnas/post-build.sh"
 '''
 
 
@@ -80,7 +80,7 @@ def comment_config_out_keys():
                 ikey = iline.split('=')[0] + '='
 
             for iconfigindex in range(len_current_config_lines):
-                if current_config_lines[iconfigindex] == '# vsNAS customized config':
+                if current_config_lines[iconfigindex] == '# QNAS customized config':
                     break
 
                 if current_config_lines[iconfigindex].startswith(ikey):
@@ -97,7 +97,7 @@ def write_custom_config():
     with open(CONFIG_PATHNAME, 'a') as f:
         f.write('\n')
         f.write('#\n')
-        f.write('# vsNAS customized config\n')
+        f.write('# QNAS customized config\n')
         f.write('#\n')
         f.write(CUSTOM_CONFIG)
         f.write('\n')

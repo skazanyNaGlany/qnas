@@ -49,10 +49,10 @@ gateway 192.168.1.1
 
 smb_conf_content = """
 [global]
-    netbios name = vsnas
+    netbios name = qnas
     display charset = UTF-8
     bind interfaces only = yes
-    server string = vsnas
+    server string = qnas
     unix charset = UTF-8
     workgroup = WORKGROUP
     browseable = yes
@@ -196,11 +196,11 @@ def write_smb_conf():
 
 
 def write_hostname():
-    open(hostname_path, 'w+').write('vsnas')
+    open(hostname_path, 'w+').write('qnas')
 
 
 def write_issue():
-    open(issue_path, 'w+').write('Welcome to vsNAS\n')
+    open(issue_path, 'w+').write('Welcome to QNAS\n')
 
 
 def enable_rc_local2():
