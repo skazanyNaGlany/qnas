@@ -1,0 +1,15 @@
+#!/bin/sh
+
+mount -t ntfs -o umask=000 /dev/sda1 /media/sda1
+mount -t btrfs /dev/sda1 /media/sda1
+mount -o umask=000 /dev/sda1 /media/sda1
+
+chmod 0777 /media/sda1
+
+if [ -x /media/sda1/rc.local ]; then
+    sh /media/sda1/rc.local
+
+    exit 0;
+fi
+
+smbd -s /etc/samba/smb.conf

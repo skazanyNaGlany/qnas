@@ -21,105 +21,32 @@ cmdline_txt_path = os.path.join(base_dir, 'images', 'rpi-firmware', 'cmdline.txt
 config_txt_path = os.path.join(base_dir, 'images', 'rpi-firmware', 'config.txt')
 inittab_path = os.path.join(base_dir, 'target', 'etc', 'inittab')
 interfaces_path = os.path.join(base_dir, 'target', 'etc', 'network', 'interfaces')
+local_interfaces_path = os.path.join(DIRPATH, 'etc', 'network', 'interfaces')
 S91smb_path = os.path.join(base_dir, 'target', 'etc', 'init.d', 'S91smb')
 rc_local_path = os.path.join(base_dir, 'target', 'etc', 'rc.local')
+local_rc_local_path = os.path.join(DIRPATH, 'etc', 'rc.local')
 smb_conf_path = os.path.join(base_dir, 'target', 'etc', 'samba', 'smb.conf')
+local_smb_conf_path = os.path.join(DIRPATH, 'etc', 'samba', 'smb.conf')
 hostname_path = os.path.join(base_dir, 'target', 'etc', 'hostname')
 issue_path = os.path.join(base_dir, 'target', 'etc', 'issue')
 rcs_path = os.path.join(base_dir, 'target', 'etc', 'init.d', 'rcS')
 media_sda1_path = os.path.join(base_dir, 'target', 'media', 'sda1')
 
-rc_local_content = """
-#!/bin/sh
-
-# copy these steps for each drive
-mkdir -p /media/sda1
-
-mount -t ntfs -o umask=000 /dev/sda1 /media/sda1
-mount -t btrfs /dev/sda1 /media/sda1
-mount -o umask=000 /dev/sda1 /media/sda1
-
-chmod 0777 /media/sda1
-
-# run samba
-smbd -s /etc/samba/smb.conf
-"""
-
-interfaces_content = """
-auto lo
-iface lo inet loopback
-
-auto eth0
-iface eth0 inet static
-address 192.168.1.5
-netmask 255.255.255.0
-gateway 192.168.1.1
-"""
-
-smb_conf_content = """
-[global]
-    netbios name = {APP_UNIXNAME}
-    display charset = UTF-8
-    bind interfaces only = yes
-    server string = {APP_UNIXNAME}
-    unix charset = UTF-8
-    workgroup = WORKGROUP
-    browseable = yes
-    deadtime = 120
-    domain master = yes
-    encrypt passwords = true
-    enable core files = no
-    guest account = nobody
-    guest ok = yes
-    invalid users = root
-    local master = yes
-    load printers = no
-    map to guest = Bad User
-    min protocol = LANMAN1
-    max protocol = SMB2
-    min receivefile size = 16384
-    null passwords = yes
-    obey pam restrictions = yes
-    os level = 20
-    passdb backend = smbpasswd
-    preferred master = yes
-    printable = no
-    security = user
-    smb encrypt = disabled
-    smb passwd file = /etc/samba/smbpasswd
-    socket options = TCP_NODELAY IPTOS_LOWDELAY SO_KEEPALIVE SO_RCVBUF=262144 SO_SNDBUF=262144
-    syslog = 2
-    use sendfile = yes
-    writeable = yes
-    keepalive = 30
-    deadtime = 300
-    log file = /tmp/samba.log
-    read raw = yes
-    write raw = yes
-    wide links = yes
-    getwd cache = yes
-    stat cache = yes
-    strict sync = no
-    large readwrite = yes
-    strict allocate = yes
-    max xmit = 131072
-    aio read size = 64360
-    aio write size = 64360
-    aio write behind = true
-    write cache size = 12826144
-
-# copy it for each drive
-[sda1]
-    path = /media/sda1
-    read only = yes
-    writable = yes
-    guest ok = yes
-    guest_only = yes
-    browseable = yes
-    force user = nobody
-    create mask = 0777
-    directory mask = 0777
-""".format(APP_UNIXNAME=APP_UNIXNAME)
+rc_local_content = open(local_rc_local_path).read().strip().format(
+    APP_NAME=APP_NAME,
+    APP_UNIXNAME=APP_UNIXNAME,
+    APP_VERSION=APP_VERSION
+)
+interfaces_content = open(local_interfaces_path).read().strip().format(
+    APP_NAME=APP_NAME,
+    APP_UNIXNAME=APP_UNIXNAME,
+    APP_VERSION=APP_VERSION
+)
+smb_conf_content = open(local_smb_conf_path).read().strip().format(
+    APP_NAME=APP_NAME,
+    APP_UNIXNAME=APP_UNIXNAME,
+    APP_VERSION=APP_VERSION
+)
 
 
 def file_extract_lines(filename):
