@@ -68,21 +68,27 @@ def file_write_lines(filename, lines):
 
 
 def enable_overscan():
-    lines = file_extract_lines(config_txt_path)
+    try:
+        lines = file_extract_lines(config_txt_path)
 
-    for i, iline in enumerate(lines):
-        if iline == 'disable_overscan=1\n':
-            iline = '# disable_overscan=1\n'
-            lines[i] = iline
+        for i, iline in enumerate(lines):
+            if iline == 'disable_overscan=1\n':
+                iline = '# disable_overscan=1\n'
+                lines[i] = iline
 
-            print('Overscan enabled')
-            break
+                lprint('Overscan enabled')
+                break
 
-    file_write_lines(config_txt_path, lines)
+        file_write_lines(config_txt_path, lines)
+    except FileNotFoundError:
+        lprint('Unable to open', config_txt_path, 'perhaps your board does not support it.')
 
 
 def quiet_boot():
-    file_write_lines(cmdline_txt_path, ['root=/dev/mmcblk0p2 rootwait console=tty1 console=ttyAMA0,115200 quiet'])
+    try:
+        file_write_lines(cmdline_txt_path, ['root=/dev/mmcblk0p2 rootwait console=tty1 console=ttyAMA0,115200 quiet'])
+    except FileNotFoundError:
+        lprint('Unable to open', cmdline_txt_path, 'perhaps your board does not support it.')
 
 
 def disable_serial_console():
