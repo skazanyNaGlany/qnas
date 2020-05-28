@@ -49,6 +49,10 @@ smb_conf_content = open(local_smb_conf_path).read().strip().format(
 )
 
 
+def lprint(*args):
+    print(APP_NAME + ':', *args)
+
+
 def file_extract_lines(filename):
     lines = []
 
@@ -88,7 +92,7 @@ def disable_serial_console():
         if iline.endswith(' # GENERIC_SERIAL\n'):
             lines[i] = '# ' + iline
 
-            print('Serial console disabled')
+            lprint('Serial console disabled')
             break
 
     file_write_lines(inittab_path, lines)
@@ -105,7 +109,7 @@ def enable_hdmi_console():
         if iline == '::sysinit:/etc/init.d/rcS\n':
             lines.insert(i + 1, hdmi_console_run_entry)
 
-            print('HDMI console enabled')
+            lprint('HDMI console enabled')
             break
 
     file_write_lines(inittab_path, lines)
@@ -124,7 +128,7 @@ def remove_smb_init():
     if os.path.exists(S91smb_path):
         os.remove(S91smb_path)
 
-        print('SMB init script removed')
+        lprint('SMB init script removed')
 
 
 def write_smb_conf():
@@ -150,7 +154,7 @@ def enable_rc_local2():
         if iline == '::sysinit:/etc/init.d/rcS\n':
             lines.insert(i + 1, rc_local_run_entry)
 
-            print('/etc/rc.local enabled')
+            lprint('/etc/rc.local enabled')
             break
 
     file_write_lines(inittab_path, lines)
@@ -163,6 +167,7 @@ def create_directories():
         pass
 
 
+lprint('Customizing target file system at', base_dir)
 enable_overscan()
 quiet_boot()
 disable_serial_console()
@@ -176,10 +181,11 @@ write_issue()
 enable_rc_local2()
 create_directories()
 
-print(config_txt_path)
-print(cmdline_txt_path)
-print(inittab_path)
-print(interfaces_path)
-print(rc_local_path)
-print(hostname_path)
-print(issue_path)
+lprint('Affected files:')
+lprint(config_txt_path)
+lprint(cmdline_txt_path)
+lprint(inittab_path)
+lprint(interfaces_path)
+lprint(rc_local_path)
+lprint(hostname_path)
+lprint(issue_path)
