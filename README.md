@@ -2,7 +2,7 @@
 
 QNAS is quick and simple NAS server, designed for Open PS2 Loader and the Raspberry Pi.
 
-It is booting in 10 seconds, and has support for most popular file systems like FAT32, EXFAT, NTFS, EXT2, EXT3, EXT4, BTRFS, F2FS, XFS.
+It is booting in 10 seconds, and has support for most popular file systems like FAT32, EXFAT, NTFS, EXT2, EXT3, EXT4, BTRFS.
 
 After boot it will serve your USB stick at `\\192.168.1.5\sda1`
 
@@ -16,8 +16,6 @@ After boot it will serve your USB stick at `\\192.168.1.5\sda1`
   * EXT3
   * EXT4
   * BTRFS
-  * F2FS
-  * XFS
 * Booting in 10 seconds
 * Built-in few tools:
   * Python 3
