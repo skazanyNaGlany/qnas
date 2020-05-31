@@ -6,6 +6,8 @@ It is booting in 10 seconds, and has support for most popular file systems like 
 
 After boot it will serve your USB stick at `\\192.168.1.5\sda1`
 
+Here is an example configuration for [Open PS2 Loader](https://raw.githubusercontent.com/skazanyNaGlany/qnas/master/ps2/opl.png) and the [PS2](https://raw.githubusercontent.com/skazanyNaGlany/qnas/master/ps2/ps2.png).
+
 ## Features
 * Samba 4.0
 * File systems support:
