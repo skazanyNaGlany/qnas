@@ -161,7 +161,7 @@ After few hours you should get your IMG file ready to flash to your SD card at `
 
 
 ## Other tips
-You can access your share at Windows by `\\192.168.1.5/sda1` or `smb://192.168.1.5/sda1/` at Linux.
+You can access your share at Windows by `\\192.168.1.5\sda1` or `smb://192.168.1.5/sda1/` at Linux.
 
 You can test your build with QEMU using such command:
 `qemu-system-arm -kernel e:\projects\kernel-qemu-4.4.34-jessie -append "root=/dev/sda2 panic=1 rootfstype=ext4 quiet" -hda e:\projects\sdcard.img -cpu arm1176 -m 256 -M versatilepb -serial none -nic user,hostfwd=tcp::1139-:139`
