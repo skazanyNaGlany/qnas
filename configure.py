@@ -108,4 +108,5 @@ comment_config_out_keys()
 write_custom_config()
 
 print('Done. Now run "make menuconfig", perform some changes or just save it without any changes.')
-print('Fially run "make", after few hours your SD card image will be in "output/images/sdcard.img"')
+print('Finally run "make", after few hours your SD card image will be in "output/images/sdcard.img"')
+
