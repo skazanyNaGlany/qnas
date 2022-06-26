@@ -151,11 +151,11 @@ $ cd buildroot
 $ git clone https://github.com/skazanyNaGlany/qnas.git qnas
 $ # list supported Buildroot boards
 $ make list-defconfigs
-$ # select a board
+$ # select a board, for example:
 $ make raspberrypi2_defconfig 
 $ qnas/configure.sh
 $ make menuconfig
-$ # Perform some changes before the build or just save without any changes. That step is required even if you will not change the config.
+$ # perform some changes before the build or just save without any changes. That step is required even if you will not change the config.
 $ make
 ```
 
